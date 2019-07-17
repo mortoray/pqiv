@@ -6638,7 +6638,12 @@ gboolean window_configure_callback(GtkWidget *widget, GdkEventConfigure *event, 
 
 	if(option_click_through) {
 		Display *display = GDK_SCREEN_XDISPLAY(gdk_screen_get_default());
-		unsigned long window_xid = gdk_x11_window_get_xid(gtk_widget_get_window(GTK_WIDGET(main_window)));
+		#if GTK_MAJOR_VERSION >= 3
+			unsigned long window_xid = gdk_x11_window_get_xid(gtk_widget_get_window(GTK_WIDGET(main_window)));
+		#else
+			GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(main_window));
+			unsigned long window_xid = GDK_WINDOW_XID(window);
+		#endif
 		Region region = XCreateRegion();
 		XRectangle rectangle = { 0, 0, 1, 1 };
 		XUnionRectWithRegion(&rectangle, region, region);
